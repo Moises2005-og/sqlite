@@ -23,13 +23,15 @@ export function useProductDatabase() {
             return {insertedRowId}
         } catch (error) {
             console.log(error)
-        }
+        } finally {
+            await statement.finalizeAsync()
+        } 
     }
 
     const searchByName = async (name: string) => {
         try {
             const query = "SELECT * FROM products WHERE name LIKE?"
-            const response = await database.getAllAsync(query, `%${name}%`)
+            const response = await database.getAllAsync<Product>(query, `%${name}%`)
 
             return response
         } catch(err) {
@@ -37,5 +39,5 @@ export function useProductDatabase() {
         }
     }
 
-    return {create}
+    return {create, searchByName}
 }
